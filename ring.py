@@ -69,7 +69,7 @@ def main():
     while True:
         battery_life = front_door[0].battery_life
         # if battery is less than threshold, send the e-mail
-        if(battery_life <= threshold):
+        if(battery_life <= int(threshold)):
             send_email(battery_life)
 
         # loop sleeps for 6 hours
