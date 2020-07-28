@@ -64,12 +64,15 @@ def main():
     devices = ring.devices()
     front_door = devices['authorized_doorbots']
 
+    threshold = input("Enter the percentage where-in you want to get reminders: ")
     # loop for checking battery life
     while True:
         battery_life = front_door[0].battery_life
-        if(battery_life <= 40):
+        # if battery is less than threshold, send the e-mail
+        if(battery_life <= threshold):
             send_email(battery_life)
 
+        # loop sleeps for 6 hours
         sleep(21600)
 
 if __name__ == "__main__":
