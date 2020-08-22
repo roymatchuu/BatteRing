@@ -71,6 +71,7 @@ def main():
         logging.info(f'The current battery life is {battery_life}')
         # if battery is less than threshold, send the e-mail
         if(battery_life <= int(threshold)):
+            logging.info("Sending the email")
             send_email(battery_life)
 
         # loop sleeps for 6 hours 21600
