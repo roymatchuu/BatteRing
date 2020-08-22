@@ -32,7 +32,7 @@ def send_email(percent):
     conn.login(sndr_user, sndr_pw) 
     
     # email body
-    txt = f'\nThe Front Door Ring Battery is at {percent}"%". Charge it!'
+    txt = f'\nThe Front Door Ring Battery is at {percent}%. Charge it!'
     subj = "Ring Alert!"
     message = "From: %s\r\n" % sndr_user + "To: %s\r\n" % rcv_eml + "Subject: %s\r\n" % subj + "\r\n" + txt    
     
@@ -68,11 +68,12 @@ def main():
     # loop for checking battery life
     while True:
         battery_life = front_door[0].battery_life
+        logging.info(f'The current battery life is {battery_life}')
         # if battery is less than threshold, send the e-mail
         if(battery_life <= int(threshold)):
             send_email(battery_life)
 
-        # loop sleeps for 6 hours
+        # loop sleeps for 6 hours 21600
         sleep(21600)
 
 if __name__ == "__main__":
