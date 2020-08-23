@@ -60,13 +60,13 @@ def main():
     ring = Ring(auth)
     ring.update_data()
 
-    # filter the Ring Devices
-    devices = ring.devices()
-    front_door = devices['authorized_doorbots']
-
     threshold = input("Enter the percentage where-in you want to get reminders: ")
     # loop for checking battery life
     while True:
+        # filter the Ring Devices
+        devices = ring.devices()
+        front_door = devices['authorized_doorbots']
+
         battery_life = front_door[0].battery_life
         logging.info(f'The current battery life is {battery_life}')
         # if battery is less than threshold, send the e-mail
@@ -75,7 +75,7 @@ def main():
             send_email(battery_life)
 
         # loop sleeps for 6 hours 21600
-        sleep(21600)
+        sleep(3600)
 
 if __name__ == "__main__":
     main()
