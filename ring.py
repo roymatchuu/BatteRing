@@ -57,12 +57,12 @@ def main():
     except MissingTokenError:
         auth.fetch_token(username, password, otp_callback())
 
-    ring = Ring(auth)
-    ring.update_data()
-
     threshold = input("Enter the percentage where-in you want to get reminders: ")
     # loop for checking battery life
     while True:
+        ring = Ring(auth)
+        ring.update_data()
+    
         # filter the Ring Devices
         devices = ring.devices()
         front_door = devices['authorized_doorbots']
