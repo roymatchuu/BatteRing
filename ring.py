@@ -5,6 +5,10 @@ from time import sleep # used to check for 6-hour checks
 
 import logging
 import smtplib # API used for sending emails
+from pathlib import Path 
+import json 
+
+cache_file = Path("token.cache")
 
 # debugging logger
 def initialize_logger(): 
@@ -40,22 +44,29 @@ def send_email(percent):
     conn.sendmail(sndr_user, rcv_eml, message) 
     conn.quit() 
 
+# updates the cache file with a refreshed token when necessary
+def token_updated(token):
+    cache_file.write_text(json.dumps(token))
+
 def main(): 
     # initialize logger for debugging
     initialize_logger()
 
-    # initialize ring account username and password
-    username = config('user')
-    password = config('pw')
+    if cache_file.is_file():
+        auth = Auth("MyProject/1.0", json.loads(cache_file.read_text()), token_updated)
+    else:
+        # initialize ring account username and password
+        username = config('user')
+        password = config('pw')
 
-    # use the Authenticator of the ring_doorbell API 
-    # tries to fetch token for authentication 
-    # requests user input for the code if necessary
-    auth = Auth("MyProject/1.0", None, None)
-    try:
-        auth.fetch_token(username, password)
-    except MissingTokenError:
-        auth.fetch_token(username, password, otp_callback())
+        # use the Authenticator of the ring_doorbell API 
+        # tries to fetch token for authentication 
+        # requests user input for the code if necessary
+        auth = Auth("MyProject/1.0", None, token_updated)
+        try:
+            auth.fetch_token(username, password)
+        except MissingTokenError:
+            auth.fetch_token(username, password, otp_callback())
 
     threshold = input("Enter the percentage where-in you want to get reminders: ")
     # loop for checking battery life
@@ -76,6 +87,7 @@ def main():
 
         # loop sleeps for 6 hours 21600
         sleep(3600)
+
 
 if __name__ == "__main__":
     main()
